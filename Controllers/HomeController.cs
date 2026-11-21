@@ -43,7 +43,7 @@ public class HomeController(
                 }
                 catch (Exception)
                 {
-                    ViewData["Erro"] = "Não foi possível obter screenshot";
+                    ViewData["Erro"] = "Error capturing screenshot, probably the URL does not exist.";
                 }
 
                 break;
@@ -55,7 +55,7 @@ public class HomeController(
                 }
                 catch (Exception)
                 {
-                    ViewData["Erro"] = "Não foi possível realizar modo de leitura";
+                    ViewData["Erro"] = "Error loading reading mode, probably the URL does not exist.";
                 }
 
                 break;
@@ -66,7 +66,7 @@ public class HomeController(
                 }
                 catch (Exception)
                 {
-                    ViewData["Erro"] = "Não foi possível encontrar headings";
+                    ViewData["Erro"] = "Error finding headings, probably the URL does not exist.";
                 }
 
                 break;
@@ -77,7 +77,7 @@ public class HomeController(
                 }
                 catch (Exception)
                 {
-                    ViewData["Erro"] = "Não foi possível obter links";
+                    ViewData["Erro"] = "Error getting links, probably the URL does not exist.";
                 }
 
                 break;
