@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Delayed content test page</title>
+</head>
+<body>
+<!-- Fixed page for the acceptance tests in selenium-web.Tests: like a single-page app,
+     it shows a loading screen and only builds the content with JavaScript after the page
+     has loaded. The delay must stay under the app's quiet window (1 s, see MyWebDriver) -->
+<div id="loading">Loading...</div>
+<script>
+    window.addEventListener('load', () => setTimeout(() => {
+        document.getElementById('loading').remove();
+        const article = document.createElement('article');
+        article.innerHTML = '<h1>Loaded title</h1><p>Content rendered by JavaScript.</p>';
+        document.body.appendChild(article);
+    }, 600));
+</script>
+</body>
+</html>

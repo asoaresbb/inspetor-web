@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Reading mode test page</title>
+</head>
+<body>
+<!-- Fixed page for the acceptance tests in selenium-web.Tests -->
+<div id="cookieBanner">We use cookies. Accept?</div>
+<article>
+    <h1>Article title</h1>
+    <p>Article body text with <a href="https://example.com/">a link</a>.</p>
+    <ul>
+        <li>First item</li>
+        <li>Second item</li>
+    </ul>
+    <!-- Must never run inside the app: the reading mode output has to be sanitised -->
+    <script>document.body.setAttribute('data-xss', 'script');</script>
+    <img src="missing.png" alt="" onerror="document.body.setAttribute('data-xss', 'onerror')">
+</article>
+<article>
+    <h2>Second article</h2>
+    <p>Second article text.</p>
+    <article>
+        <p>Nested comment text.</p>
+    </article>
+</article>
+<footer>Footer text outside the article.</footer>
+</body>
+</html>

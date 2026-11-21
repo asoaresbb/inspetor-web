@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Links test page</title>
+</head>
+<body>
+<!-- Fixed page for the acceptance tests in selenium-web.Tests. The external links are
+     never opened, the app only reads their href -->
+<nav>
+    <!-- Internal: left out -->
+    <a href="/">Home</a>
+    <a href="headings.html">Relative link</a>
+    <a href="#top">Back to top</a>
+    <a href="http://localhost:5206/test-pages/reading-mode.html">Same site, absolute</a>
+    <a>No href</a>
+    <a href="mailto:someone@example.com">Email</a>
+    <a href="javascript:void(0)">Script</a>
+
+    <!-- External: listed -->
+    <a href="https://example.com/">Example site</a>
+    <a href="https://github.com/" aria-label="GitHub"><svg width="16" height="16"></svg></a>
+    <a href="https://www.wikipedia.org/" hidden>Wikipedia</a>
+</nav>
+</body>
+</html>

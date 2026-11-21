@@ -17,7 +17,7 @@
                        value="@ViewData["url"]" pattern="https?://.+" required>
             </div>
 
-            <div class="form-group mb-3 d-flex justify-content-center">
+            <div id="actionButtons" class="form-group mb-3 d-flex justify-content-center">
                 <button class="btn btn-primary mx-2" type="submit" id="btnAction1" name="actionButton"
                         value="screenshot">Take Screenshot
                 </button>
@@ -31,16 +31,23 @@
                 </button>
             </div>
 
+            <div id="loadingMessage" class="alert alert-secondary text-center d-none" role="status">
+                <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+                <span id="loadingText"></span>
+                <div class="small text-muted mt-1">This can take a few seconds.</div>
+            </div>
+
             @if (ViewData["Erro"] != null)
             {
                 <div id="errorMessage" class="alert alert-danger">
-                    @Html.Raw(ViewData["Erro"])
+                    @ViewData["Erro"]
                 </div>
             }
         </form>
     </div>
 </div>
 
+<div id="results">
 @if (ViewData["ImagemBase64"] != null)
 {
     <div class="mt-4">
@@ -55,35 +62,80 @@
     </div>
 }
 
-@if (ViewData["ReadData"] != null)
+@if (ViewData["ReadData"] is List<ReadingBlock> readingBlocks)
 {
     <div class="mt-4">
-        <div class="card">
+        <div class="card" id="readingModeResult">
             <div class="card-header">
                 <h3>Reading Mode Result</h3>
             </div>
             <div class="card-body">
-                @Html.Raw(ViewData["ReadData"])
+                @* Plain text only: Razor encodes it, so nothing from the inspected page runs here *@
+                <div class="reading-mode">
+                    @foreach (var block in readingBlocks)
+                    {
+                        switch (block.Tag)
+                        {
+                            case "h1" or "h2" or "h3" or "h4" or "h5" or "h6":
+                                <p class="reading-heading reading-@block.Tag" role="heading"
+                                   aria-level="@block.Tag[1..]">@block.Text</p>
+                                break;
+                            case "li":
+                                <p class="reading-list-item">@block.Text</p>
+                                break;
+                            case "blockquote":
+                                <blockquote>@block.Text</blockquote>
+                                break;
+                            case "pre":
+                                <pre>@block.Text</pre>
+                                break;
+                            case "hr":
+                                <hr class="reading-separator"/>
+                                break;
+                            default:
+                                <p>@block.Text</p>
+                                break;
+                        }
+                    }
+                </div>
             </div>
         </div>
     </div>
 }
 
-@if (ViewData["Headings"] is List<Heading> headings)
+@if (ViewData["Headings"] is List<Heading> { Count: 0 })
 {
-    <ul>
+    <div id="noResults" class="alert alert-info mt-4">No headings found on this page.</div>
+}
+else if (ViewData["Headings"] is List<Heading> headings)
+{
+    @* Each level is indented further, so the hierarchy of the page is visible *@
+    <ul id="headingsResult" class="headings-structure">
         @foreach (var heading in headings)
         {
-            <li>
-                <strong>@heading.Level</strong>: @heading.Text
+            <li class="heading-level-@heading.Level" data-level="@heading.Level">
+                <span class="heading-tag">H@(heading.Level)</span>
+                @heading.Text
+                @if (heading.Visibility == HeadingVisibility.Hidden)
+                {
+                    <span class="heading-flag">(hidden)</span>
+                }
+                else if (heading.Visibility == HeadingVisibility.Empty)
+                {
+                    <span class="heading-flag heading-flag-empty">(empty)</span>
+                }
             </li>
         }
     </ul>
 }
 
-@if (ViewData["Links"] is List<Link> links)
+@if (ViewData["Links"] is List<Link> { Count: 0 })
 {
-    <ul>
+    <div id="noResults" class="alert alert-info mt-4">No external links found on this page.</div>
+}
+else if (ViewData["Links"] is List<Link> links)
+{
+    <ul id="externalLinks">
         @foreach (var link in links)
         {
             <li>
@@ -93,18 +145,32 @@
     </ul>
 }
 
+</div>
+
 <script>
     document.getElementById('urlInput').addEventListener('blur', (event) => {
+        // Add https:// only to a typed address without a scheme (e.g. "cnn.com").
+        // An empty field stays empty, otherwise typing afterwards gives "https://http://..."
         const value = (event.target.value ?? '').trim();
-        if (!(value.startsWith("http://") || value.startsWith("https://")))
+        if (value !== '' && !/^[a-z]+:\/\//i.test(value))
             event.target.value = 'https://' + value;
     })
 
+    const loadingTexts = {
+        screenshot: 'Taking screenshot...',
+        readingmode: 'Extracting the main content...',
+        headingsStructure: 'Reading the headings...',
+        links: 'Finding external links...'
+    };
+
     document.getElementsByTagName('form')[0].addEventListener('submit', (event) => {
-        const form = event.target;
-        setTimeout(() => { // timeout garante que o browser submete primeiro antes de desativar botões
-            const buttons = form.querySelectorAll('button');
-            buttons.forEach(button => button.disabled = true);
+        document.getElementById('loadingText').textContent = loadingTexts[event.submitter?.value] ?? 'Loading...';
+        // The timeout lets the browser submit the clicked button's value before the buttons are hidden
+        setTimeout(() => {
+            document.getElementById('actionButtons').classList.add('d-none');
+            document.getElementById('errorMessage')?.remove();
+            document.getElementById('results').classList.add('d-none');
+            document.getElementById('loadingMessage').classList.remove('d-none');
         }, 0);
     })
 </script>

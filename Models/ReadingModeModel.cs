@@ -4,7 +4,7 @@ namespace selenium_web.Models
 {
     public class ReadingModeModel(IReadingModeService readingModeService)
     {
-        public string GetContentReadingMode(string url)
+        public List<ReadingBlock> GetContentReadingMode(string url)
         {
             return readingModeService.GetContentReadingMode(url);
         }

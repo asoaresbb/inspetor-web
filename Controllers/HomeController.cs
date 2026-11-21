@@ -9,7 +9,8 @@ public class HomeController(
     ScreenshotModel screenshotModel,
     ReadingModeModel readingModeModel,
     HeadingsStructureModel headingsStructureModel,
-    LinksModel linksModel
+    LinksModel linksModel,
+    ILogger<HomeController> logger
 )
     : Controller
 {
@@ -41,8 +42,9 @@ public class HomeController(
                 {
                     ViewData["ImagemBase64"] = screenshotModel.CaptureScreenshot(url);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    logger.LogWarning(ex, "Screenshot failed for {Url}", url);
                     ViewData["Erro"] = "Error capturing screenshot, probably the URL does not exist.";
                 }
 
@@ -53,8 +55,13 @@ public class HomeController(
                 {
                     ViewData["ReadData"] = readingModeModel.GetContentReadingMode(url);
                 }
-                catch (Exception)
+                catch (NoMainContentException)
                 {
+                    ViewData["Erro"] = "No article, main or #content found on this page.";
+                }
+                catch (Exception ex)
+                {
+                    logger.LogWarning(ex, "Reading mode failed for {Url}", url);
                     ViewData["Erro"] = "Error loading reading mode, probably the URL does not exist.";
                 }
 
@@ -64,8 +71,9 @@ public class HomeController(
                 {
                     ViewData["Headings"] = headingsStructureModel.GetHeadings(url);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    logger.LogWarning(ex, "Headings failed for {Url}", url);
                     ViewData["Erro"] = "Error finding headings, probably the URL does not exist.";
                 }
 
@@ -75,8 +83,9 @@ public class HomeController(
                 {
                     ViewData["Links"] = linksModel.GetLinks(url);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    logger.LogWarning(ex, "Links failed for {Url}", url);
                     ViewData["Erro"] = "Error getting links, probably the URL does not exist.";
                 }
 
