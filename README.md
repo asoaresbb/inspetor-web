@@ -1,44 +1,46 @@
 # Inspetor Web
 
-Aplicação web em ASP.NET MVC que usa o Selenium WebDriver para inspecionar páginas. Introduz-se um URL e escolhe-se o que ver.
+An ASP.NET MVC web app that uses Selenium WebDriver to inspect web pages. Enter a URL and choose what to see.
 
-## Funcionalidades
+## Features
 
-- **Captura de ecrã** da página
-- **Modo de leitura**, sem pop-ups de cookies nem publicidade
-- **Estrutura de títulos**: a hierarquia dos `h1`, `h2`, `h3`...
-- **Ligações externas** encontradas na página, num gráfico
+- **Screenshot** of the page
+- **Reading mode**: shows only the main content of the page, taken from the first `<article>`, `<main>` or `#content` element found
+- **Heading structure**: the hierarchy of `h1`, `h2`, `h3`...
+- **Links**: every link found on the page, as a list
 
-O Selenium corre em modo headless, sem abrir janela. O driver do Chrome é descarregado automaticamente pelo `WebDriverManager`.
+The app runs Selenium headless, without opening a browser window. The Chrome driver is downloaded automatically by `WebDriverManager`.
 
-## Arquitetura
+## Architecture
 
-O projeto segue o padrão MVC, com uma camada de adaptadores entre o domínio e o Selenium:
+The project follows the MVC pattern, with an adapter layer between the domain and Selenium:
 
-| Camada | Ficheiros | O que faz |
+| Layer | Files | What it does |
 | --- | --- | --- |
-| Controller | `Controllers/HomeController.cs` | Recebe o URL e a ação escolhida e trata os erros |
-| Model | `Models/` | Um modelo por funcionalidade, com o resultado a mostrar |
-| View | `Views/Home/` | Páginas Razor, com Bootstrap |
-| Adaptadores | `Adapters/` | Uma interface por funcionalidade (`IScreenshotService`, `IReadingModeService`, `IHeadingService`, `ILinksService`) e a sua implementação com o Selenium |
+| Controller | `Controllers/HomeController.cs` | Receives the URL and the chosen action, and handles errors |
+| Model | `Models/` | One model per feature, holding the result to display |
+| View | `Views/Home/` | Razor pages, with Bootstrap |
+| Adapters | `Adapters/` | One interface per feature (`IScreenshotService`, `IReadingModeService`, `IHeadingService`, `ILinksService`) and its Selenium implementation |
 
-Os modelos dependem só das interfaces, por isso o Selenium pode ser trocado, por exemplo por um mock nos testes, sem mexer no resto.
+The models depend only on the interfaces, so Selenium can be swapped out, for example for a mock in tests, without touching the rest.
 
-## Como correr
+## Running
 
-Requer o [.NET SDK 9.0 ou mais recente](https://dotnet.microsoft.com/download) e o Google Chrome.
+Requires the [.NET SDK 9.0 or later](https://dotnet.microsoft.com/download) and Google Chrome.
 
 ```sh
-dotnet run          # arranca em http://localhost:5206
-dotnet watch run    # o mesmo, a recarregar quando o código muda
+dotnet run          # starts on http://localhost:5206
+dotnet watch run    # same, reloading when the code changes
 ```
 
-Os testes de aceitação, com Selenium e o padrão Page Object, precisam da aplicação a correr. Noutro terminal:
+The acceptance tests, written with Selenium and the Page Object pattern, need the app to be running. In another terminal:
 
 ```sh
 dotnet test
 ```
 
-## Contexto
+The tests open a visible Chrome window for each test.
 
-Projeto da unidade curricular de Laboratório de Desenvolvimento de Software, Universidade Aberta, 2025. Feito em par com uma colega.
+## Context
+
+Course project for Software Development Lab (Laboratório de Desenvolvimento de Software), Universidade Aberta, 2025. Built in a pair with a classmate.
