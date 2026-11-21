@@ -2,6 +2,8 @@
 
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
+        <!-- Corre também em versões mais recentes do .NET, se a 9 não estiver instalada -->
+        <RollForward>Major</RollForward>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>selenium_web</RootNamespace>

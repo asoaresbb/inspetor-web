@@ -26,7 +26,7 @@ Os modelos dependem só das interfaces, por isso o Selenium pode ser trocado, po
 
 ## Como correr
 
-Requer o [.NET SDK 9.0](https://dotnet.microsoft.com/download) e o Google Chrome.
+Requer o [.NET SDK 9.0 ou mais recente](https://dotnet.microsoft.com/download) e o Google Chrome.
 
 ```sh
 dotnet run          # arranca em http://localhost:5206
