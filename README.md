@@ -1,4 +1,4 @@
-# Inspetor Web
+# Web Page Inspector
 
 An ASP.NET MVC web app that uses Selenium WebDriver to inspect web pages. Enter a URL and choose what to see.
 
