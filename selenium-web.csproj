@@ -7,6 +7,8 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>selenium_web</RootNamespace>
+        <!-- Os testes estão neste projeto: não gerar o Main do Test SDK, a app já tem o seu -->
+        <GenerateProgramFile>false</GenerateProgramFile>
     </PropertyGroup>
 
     <ItemGroup>
